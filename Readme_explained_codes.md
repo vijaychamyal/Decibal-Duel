@@ -1,6 +1,7 @@
 TASK 1:
 Below is the explanation of the code of task 1. I have explained all the terms used and logic behind using these things.
 Its score on Kaggle is 0.9891
+I have submitted this on 13th but it is showing late submission so not updated in leaderboard
 Here is the summary and then I have explained in detailed about this below:
 1.	Setup & Config: The code first installs libraries, mounts my Google Drive, and sets up all key parameters. This includes the audio sample rate, image size, model name (EfficientNetV2-M), and training settings (epochs, learning rate, etc.).
 2.	Audio Pre-processing: It defines a function extract_mel that takes any .wav file, resamples it to a standard 32kHz, pads or trims it to exactly 5 seconds, and converts it into a Mel spectrogram (a 2D image representation of the audio).

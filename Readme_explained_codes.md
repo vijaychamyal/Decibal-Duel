@@ -18,8 +18,11 @@ c.	Resizes the spectrogram "image" to 384x384 to fit the model's input.
 7.	It validates the model after each epoch and saves only the version with the highest validation accuracy.
 8.	Inference with TTA: For prediction on the test set, it loads the best-saved model. Instead of predicting just once, it uses Test-Time Augmentation (TTA). It creates 12 slightly different versions of each test image, gets 12 separate predictions, and then averages them for a final, more robust answer.
 a.	Submission: Finally, it formats these predictions into a submission.csv file and provides a command to download it.
+
+
+
 Now this is detailed explanation of the code :
-1.	Setup and imports :
+ 1.	Setup and imports :
 •	It installs necessary third-party libraries: “timm” (pytorch image models), “torchaudio” (for audio processing), and “librosa” (audio analysis tool).
 •	It mounts  Google Drive, allowing  script to access files stored there (dataset).
 •	It imports all the standard libraries needed for the script: os for file paths, numpy for numerical operations, pandas for handling data, torch for the deep learning framework, tqdm for progress bars, and sklearn for data splitting.

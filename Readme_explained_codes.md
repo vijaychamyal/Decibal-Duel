@@ -1,4 +1,4 @@
-TASK 1:
+TASK 1: Untitled6.ipynb
 Below is the explanation of the code of task 1. I have explained all the terms used and logic behind using these things.
 Its score on Kaggle is 0.9891
 I have submitted this on 13th but it is showing late submission so not updated in leaderboard
@@ -139,16 +139,24 @@ Now this is detailed explanation of the code :
 •	It prints a confirmation and a "Distribution" count, which shows you how many test samples were assigned to each class (useful checking).
 26.	Download Submission: This final block uses a Google Colab helper function to trigger a download of the submission_optimized.csv file from the Colab environment directly to my local computer's "Downloads" folder.
 So this was the things I have used in my code, now below is the explaination of the code of task 2.
+
+
+
+
+
+
+
  
- TASK 2:
-In this task I have first downloaded .wav file from internet from source ESC – 50 and located in my drive as per the directory given in the readme file of github.
-These were the available categories in ESC-50:
+ TASK 2: Untitled10.ipynb
+   In this task I have first downloaded .wav file from internet from source ESC – 50 and located in my drive as per the directory given in the readme file of github.
+ These were the available categories in ESC-50:
 Animals: Dog, Cat, Hen, Frog, Cow, Pig, Rooster, Insects, Sheep, Crow
 Natural Soundscapes: Rain, Sea waves, Wind, Water drops, Thunderstorm
 Human Non-Speech: Crying baby, Sneezing, Coughing, Footsteps, Laughing
 Interior/Domestic: Door knock, Mouse click, Keyboard typing, Washing machine, Clock alarm
 Exterior/Urban: Helicopter, Engine, Train, Car horn, Siren
 Here is the detailed explanation of the code in task 2:
+
  1.DATASET WITH NORMALIZATION
 •	_init__: When we create the dataset, it scans the root_dir for all .wav files in the specified categories. It builds a list of (file_path, label_index) pairs. The fraction parameter allows us to use only a portion of the data for testing.
 •	_len__: A standard function that just returns the total number of audio files in the list.

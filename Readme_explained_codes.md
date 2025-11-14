@@ -12,11 +12,11 @@ b.	Applies a strong chain of data augmentations (like spec_aug, mixup, and cutmi
 c.	Resizes the spectrogram "image" to 384x384 to fit the model's input.
 5.	Balanced Training: The script uses a WeightedRandomSampler to handle class imbalance. This means it intentionally oversamples audio from rare classes and undersamples from common ones so the model gets a more balanced view.
 6.	Model Training: It loads the pre-trained EfficientNetV2-M model and fine-tunes it on the spectrograms. It uses modern training techniques like:
-7.	Mixed Precision (scaler): To speed up training and use less GPU memory.
-8.	OneCycleLR Scheduler: To intelligently manage the learning rate for faster convergence.
-9.	Label Smoothing: A regularization technique to make the model less overconfident.
-10.	It validates the model after each epoch and saves only the version with the highest validation accuracy.
-11.	Inference with TTA: For prediction on the test set, it loads the best-saved model. Instead of predicting just once, it uses Test-Time Augmentation (TTA). It creates 12 slightly different versions of each test image, gets 12 separate predictions, and then averages them for a final, more robust answer.
+	Mixed Precision (scaler): To speed up training and use less GPU memory.
+	OneCycleLR Scheduler: To intelligently manage the learning rate for faster convergence.
+	Label Smoothing: A regularization technique to make the model less overconfident.
+7.	It validates the model after each epoch and saves only the version with the highest validation accuracy.
+8.	Inference with TTA: For prediction on the test set, it loads the best-saved model. Instead of predicting just once, it uses Test-Time Augmentation (TTA). It creates 12 slightly different versions of each test image, gets 12 separate predictions, and then averages them for a final, more robust answer.
 a.	Submission: Finally, it formats these predictions into a submission.csv file and provides a command to download it.
 Now this is detailed explanation of the code :
 1.	Setup and imports :

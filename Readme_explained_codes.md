@@ -140,7 +140,7 @@ Now this is detailed explanation of the code :
 26.	Download Submission: This final block uses a Google Colab helper function to trigger a download of the submission_optimized.csv file from the Colab environment directly to my local computer's "Downloads" folder.
 So this was the things I have used in my code, now below is the explaination of the code of task 2.
  
-TASK 2:
+ TASK 2:
 In this task I have first downloaded .wav file from internet from source ESC – 50 and located in my drive as per the directory given in the readme file of github.
 These were the available categories in ESC-50:
 Animals: Dog, Cat, Hen, Frog, Cow, Pig, Rooster, Insects, Sheep, Crow
@@ -149,7 +149,7 @@ Human Non-Speech: Crying baby, Sneezing, Coughing, Footsteps, Laughing
 Interior/Domestic: Door knock, Mouse click, Keyboard typing, Washing machine, Clock alarm
 Exterior/Urban: Helicopter, Engine, Train, Car horn, Siren
 Here is the detailed explanation of the code in task 2:
-1.DATASET WITH NORMALIZATION
+ 1.DATASET WITH NORMALIZATION
 •	_init__: When we create the dataset, it scans the root_dir for all .wav files in the specified categories. It builds a list of (file_path, label_index) pairs. The fraction parameter allows us to use only a portion of the data for testing.
 •	_len__: A standard function that just returns the total number of audio files in the list.
 •	_getitem__: This is the most important part. When the DataLoader asks for an item, this function:

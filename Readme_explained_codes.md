@@ -1,6 +1,6 @@
-TASK 1: Untitled6.ipynb
-Below is the explanation of the code of task 1. I have explained all the terms used and logic behind using these things.
-Its score on Kaggle is 0.9891
+#TASK 1: Untitled6.ipynb
+##Below is the explanation of the code of task 1. I have explained all the terms used and logic behind using these things.
+##Its score on Kaggle is 0.9891
 I have submitted this on 13th but it is showing late submission so not updated in leaderboard
 Here is the summary and then I have explained in detailed about this below:
 1.	Setup & Config: The code first installs libraries, mounts my Google Drive, and sets up all key parameters. This includes the audio sample rate, image size, model name (EfficientNetV2-M), and training settings (epochs, learning rate, etc.).
@@ -139,96 +139,6 @@ Now this is detailed explanation of the code :
 •	It prints a confirmation and a "Distribution" count, which shows you how many test samples were assigned to each class (useful checking).
 26.	Download Submission: This final block uses a Google Colab helper function to trigger a download of the submission_optimized.csv file from the Colab environment directly to my local computer's "Downloads" folder.
 So this was the things I have used in my code, now below is the explaination of the code of task 2.
-
-
-
-
-
-
-
- 
- TASK 2: Untitled10.ipynb
-   In this task I have first downloaded .wav file from internet from source ESC – 50 and located in my drive as per the directory given in the readme file of github.
- These were the available categories in ESC-50:
-Animals: Dog, Cat, Hen, Frog, Cow, Pig, Rooster, Insects, Sheep, Crow
-Natural Soundscapes: Rain, Sea waves, Wind, Water drops, Thunderstorm
-Human Non-Speech: Crying baby, Sneezing, Coughing, Footsteps, Laughing
-Interior/Domestic: Door knock, Mouse click, Keyboard typing, Washing machine, Clock alarm
-Exterior/Urban: Helicopter, Engine, Train, Car horn, Siren
-Here is the detailed explanation of the code in task 2:
-
- 1.DATASET WITH NORMALIZATION
-•	_init__: When we create the dataset, it scans the root_dir for all .wav files in the specified categories. It builds a list of (file_path, label_index) pairs. The fraction parameter allows us to use only a portion of the data for testing.
-•	_len__: A standard function that just returns the total number of audio files in the list.
-•	_getitem__: This is the most important part. When the DataLoader asks for an item, this function:
-•	Loads one audio file (torchaudio.load).
-•	Converts it to mono (single channel).
-•	Computes its log-Mel spectrogram, which is an "image" representation of the sound.
-•	Normalizes the spectrogram by subtracting its own mean and dividing by its standard deviation. This scales the data into a standard [-1, 1] range, which is critical for stable GAN training.
-•	Pads or truncates the spectrogram to a fixed length (max_frames) so all samples are the same size.
-•	Converts the numerical label (e.g., 2) into a one-hot vector (e.g., [0, 0, 1, 0, 0]), which is how the model will understand the "condition" or category.
-        2. IMPROVED GENERATOR:
-         This class defines the Generator network. Its goal is to create a fake spectrogram that looks real.
-•	It's a "conditional" generator, meaning it takes two inputs:
-1.	z: A random noise vector (the "latent code," which provides random variation).
-2.	y: The one-hot label vector (the "condition," which tells it what sound to make).
-•	forward: The inputs z and y are first concatenated (joined together). This combined vector is fed into a fully-connected (fc) layer, which projects it into a small 3D "feature map."
-•	net: This feature map is then passed through a series of Transposed Convolution (ConvTranspose2d) layers. These layers "up-sample" the map, making it progressively larger (8x32 -> 16x64 -> ... -> 128x512) until it's the full size of a spectrogram.
-•	nn.Tanh(): The final layer is a Tanh activation. This is a crucial design choice because Tanh squashes the output to be exactly in the [-1, 1] range, which perfectly matches the normalized data from your dataset.
-3. IMPROVED DISCRIMINATOR WITH SPECTRAL NORMALIZATION
-This class defines the Discriminator (or "Critic" in WGAN terms). Its goal is to look at a spectrogram and decide if it's real or fake.
-•	label_embedding: It also takes the spectrogram and its label y as input. It first converts the label into a "label map" that is the same size as the spectrogram.
-•	forward: It concatenates this label map with the input spectrogram (real or fake) along the channel dimension (creating a 2-channel "image").
-•	This 2-channel input is then passed through a series of standard convolutional (Conv2d) layers, which "down-sample" it, extracting features and shrinking it.
-•	spectral_norm: This is the most important feature here. Every convolutional layer is wrapped in spectral_norm. This is a mathematical constraint (a "Lipschitz constraint") that controls the gradients of the discriminator. It prevents them from exploding, which is the primary reason older GANs were so unstable. This is a key part of modern, stable WGANs.
-•	The final layer outputs a single number (a "score"), not a probability, which represents how "real" the discriminator thinks the input is.
-4. WGAN-GP: GRADIENT PENALTY
-This function implements the "Gradient Penalty" (the "GP" in WGAN-GP). This is the loss function that replaces spectral_norm's job in some GANs (though they can be used together, here it's the main stabilizer for the WGAN loss).
-1.	It creates "interpolated" samples by mixing real and fake spectrograms together.
-2.	It runs these "in-between" samples through the discriminator.
-3.	It then calculates the gradient of the discriminator's output score with respect to the input samples.
-4.	The "penalty" is a loss term that tries to force the magnitude (norm) of these gradients to be exactly 1.
-5.	This smooths the loss landscape and prevents the discriminator's gradients from vanishing or exploding, leading to much more stable training.
-5.EXPONENTIAL MOVING AVERAGE FOR GENERATOR: This function maintains a "shadow copy" of the generator, called the Exponential Moving Average (EMA) generator. After every training step, it slightly updates the EMA generator's weights to be a smoothed average of the main generator's weights. This EMA model is often less "jumpy" and produces more stable, higher-quality samples than the main generator, so it's used for generating the final audio.
-6. CHECKPOINT MANAGEMENT: 
-•	save_checkpoint saves the current state of the generator, discriminator, and their optimizers to a file.
-•	load_checkpoint loads those states back from a file. This allows you to pause and resume training without starting over from scratch.
-7. IMPROVED AUDIO GENERATION
-This function takes the trained (EMA) generator and produces an actual .wav file.
-1.	It generates a fake, normalized spectrogram (in the [-1, 1] range).
-2.	It denormalizes the spectrogram (multiplies by the std and adds the mean you'll calculate in the training loop). This is the critical reverse step.
-3.	It reverses the log1p operation (torch.expm1).
-4.	It converts the Mel spectrogram back to a linear spectrogram (InverseMelScale).
-5.	Finally, it uses the Griffin-Lim algorithm to reconstruct an audio waveform from the spectrogram. Griffin-Lim is an approximation algorithm used when you only have the magnitude of a spectrogram and not the phase.
-8. TRAINING FUNCTION WITH WGAN-GP
-This is the main function that orchestrates the entire training process.
-1.	Setup: It creates the Adam optimizers for the Generator (G) and Discriminator (D). Note the Two Time-scale Update Rule (TTUR): the Discriminator's learning rate (lr_d) is higher than the Generator's (lr_g). It also creates the ema_generator.
-2.	Dataset Stats: It calculates the overall mean and std of the dataset, which are needed for denormalizing in the generate_audio function.
-3.	Epoch Loop: It loops for the total number of epochs.
-4.	Inner (Batch) Loop: For each batch of real data:
-o	Train Discriminator (Critic): This loop runs n_critic (5) times for every 1 generator update. This is a key WGAN concept—the critic must be "ahead" of the generator.
-	It gets the score for real specs: real_validity.
-	It generates fake specs and gets their score: fake_validity.
-	It calculates the gradient penalty: gp.
-	The loss d_loss is -real_validity + fake_validity + gp. It tries to make the real score high and the fake score low.
-	It updates the discriminator's weights.
-o	Train Generator: This runs only once after the critic's 5 steps.
-	It generates new fake specs and gets their score from the (updated) discriminator.
-	The loss g_loss is just -fake_validity. The generator's goal is to maximize the discriminator's score for its fake samples, so it minimizes the negative score.
-	It updates the generator's weights.
-o	Update EMA: It calls update_ema to update the shadow generator.
-5.	Logging: Periodically, it generates and saves sample spectrogram images and audio files using the high-quality ema_generator. It also saves checkpoints.
-9. MAIN EXECUTION
-This is the part of the script that actually runs.
-1.	It defines all the key hyperparameters: DEVICE (GPU or CPU), LATENT_DIM (noise vector size), EPOCHS, BATCH_SIZE, learning rates, LAMBDA_GP (how much to weight the gradient penalty), and N_CRITIC (how many times to train D per G step).
-2.	It sets the paths and finds the audio categories.
-3.	It creates the ImprovedAudioDataset and DataLoader.
-4.	It initializes the ImprovedGenerator and ImprovedDiscriminator models.
-5.	Finally, it calls the train_improved_gan function to start the entire process.
-
-
-
-
 
 
 
